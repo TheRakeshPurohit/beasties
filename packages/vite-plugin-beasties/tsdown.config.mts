@@ -5,4 +5,4 @@ export default defineConfig({
   format: ['esm'],
   dts: true,
   deps: { neverBundle: ['vite'] },
-})
+}) as ReturnType<typeof defineConfig>

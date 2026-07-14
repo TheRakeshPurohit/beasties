@@ -113,7 +113,7 @@ export default class Beasties {
   /**
    * Apply critical CSS processing to the html
    */
-  async process(html: string) {
+  async process(html: string): Promise<string> {
     const start = Date.now()
 
     // Parse the generated HTML in a DOM we can mutate
@@ -169,7 +169,7 @@ export default class Beasties {
   /**
    * Get the style tags that need processing
    */
-  getAffectedStyleTags(document: HTMLDocument) {
+  getAffectedStyleTags(document: HTMLDocument): Node[] {
     const styles = [...document.querySelectorAll('style')]
 
     // `inline:false` skips processing of inline stylesheets
@@ -179,7 +179,7 @@ export default class Beasties {
     return styles
   }
 
-  mergeStylesheets(document: HTMLDocument) {
+  mergeStylesheets(document: HTMLDocument): void {
     const styles = this.getAffectedStyleTags(document)
     if (styles.length === 0) {
       this.logger.warn?.(
@@ -260,7 +260,7 @@ export default class Beasties {
     return sheet
   }
 
-  checkInlineThreshold(link: Node, style: Node, sheet: string) {
+  checkInlineThreshold(link: Node, style: Node, sheet: string): boolean {
     if (this.options.inlineThreshold && sheet.length < this.options.inlineThreshold) {
       const href = style.$$name
       style.$$reduce = false
@@ -277,7 +277,7 @@ export default class Beasties {
   /**
    * Inline the stylesheets from options.additionalStylesheets (assuming it passes `options.filter`)
    */
-  async embedAdditionalStylesheet(document: HTMLDocument) {
+  async embedAdditionalStylesheet(document: HTMLDocument): Promise<void> {
     const styleSheetsIncluded: string[] = []
 
     const sources = await Promise.all(
@@ -450,7 +450,7 @@ export default class Beasties {
   /**
    * Inline the target stylesheet referred to by a <link rel="stylesheet"> (assuming it passes `options.filter`)
    */
-  async embedLinkedStylesheet(link: ChildNode, document: HTMLDocument) {
+  async embedLinkedStylesheet(link: ChildNode, document: HTMLDocument): Promise<void> {
     const sheet = await this.fetchStylesheet(link, document)
     if (sheet) {
       this.embedFetchedStylesheet(sheet, document)
@@ -460,7 +460,7 @@ export default class Beasties {
   /**
    * Prune the source CSS files
    */
-  pruneSource(style: Node, before: string, sheetInverse: string) {
+  pruneSource(style: Node, before: string, sheetInverse: string): boolean {
     // if external stylesheet would be below minimum size, just inline everything
     const minSize = this.options.minimumExternalSize
     const name = style.$$name
@@ -487,7 +487,7 @@ export default class Beasties {
   /**
    * Parse the stylesheet within a <style> element, then reduce it to contain only rules used by the document.
    */
-  processStyle(style: Node, document: HTMLDocument) {
+  processStyle(style: Node, document: HTMLDocument): void {
     if (style.$$reduce === false)
       return
 

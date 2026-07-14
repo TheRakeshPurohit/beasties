@@ -56,11 +56,11 @@ const DOT_SLASH_RE = /^\.\//
  * }
  */
 export default class BeastiesWebpackPlugin extends Beasties {
-  declare compilation: Compilation
-  declare compiler: Compiler
-  declare fs: OutputFileSystem
-  declare logger: Required<NonNullable<Options['logger']>>
-  declare options: Options & Required<Pick<Options, 'logLevel' | 'path' | 'publicPath' | 'reduceInlineStyles' | 'pruneSource' | 'additionalStylesheets'>> & { allowRules: Array<string | RegExp> }
+  private declare compilation: Compilation
+  private declare compiler: Compiler
+  private declare fs: OutputFileSystem
+  private declare logger: Required<NonNullable<Options['logger']>>
+  private declare options: Options & Required<Pick<Options, 'logLevel' | 'path' | 'publicPath' | 'reduceInlineStyles' | 'pruneSource' | 'additionalStylesheets'>> & { allowRules: Array<string | RegExp> }
   constructor(options: Options) {
     super(options)
   }
@@ -68,7 +68,7 @@ export default class BeastiesWebpackPlugin extends Beasties {
   /**
    * Invoked by Webpack during plugin initialization
    */
-  apply(compiler: Compiler) {
+  apply(compiler: Compiler): void {
     this.compiler = compiler
     this.logger = Object.assign(compiler.getInfrastructureLogger(PLUGIN_NAME), {
       silent(_: string): void { },
@@ -237,7 +237,7 @@ export default class BeastiesWebpackPlugin extends Beasties {
   /**
    * Inline the stylesheets from options.additionalStylesheets (assuming it passes `options.filter`)
    */
-  async embedAdditionalStylesheet(document: Document) {
+  async embedAdditionalStylesheet(document: Document): Promise<void> {
     const styleSheetsIncluded: string[] = [];
     (this.options.additionalStylesheets || []).forEach((cssFile: string) => {
       if (styleSheetsIncluded.includes(cssFile)) {

@@ -36,12 +36,12 @@ function parseDom(html: string) {
 }
 
 // returns a promise resolving to the contents of a file
-export function readFile(file: string) {
+export function readFile(file: string): Promise<string> {
   return promisify(fs.readFile)(path.resolve(cwd, file), 'utf-8')
 }
 
 // invoke webpack on a given entry module, optionally mutating the default configuration
-export function compile(entry: string, configDecorator: (config: webpack.Configuration) => webpack.Configuration | void) {
+export function compile(entry: string, configDecorator: (config: webpack.Configuration) => webpack.Configuration | void): Promise<webpack.StatsCompilation> {
   return new Promise<webpack.StatsCompilation>((resolve, reject) => {
     const context = path.dirname(path.resolve(cwd, entry))
     entry = path.basename(entry)
@@ -82,7 +82,7 @@ export async function compileToHtml(
   fixture: string,
   configDecorator: (config: webpack.Configuration) => webpack.Configuration | void,
   beastiesOptions: Options = {},
-) {
+): Promise<webpack.StatsCompilation & { html: string, document: Document }> {
   const info = await compile(`fixtures/${fixture}/index.js`, (config) => {
     config = configDecorator(config) || config
     config.plugins!.push(
