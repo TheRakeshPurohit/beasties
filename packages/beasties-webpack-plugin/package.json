@@ -51,7 +51,7 @@
     "node": "^20.19.0 || >=22.0.0"
   },
   "scripts": {
-    "build": "unbuild",
+    "build": "tsdown",
     "docs": "documentation readme src -q --no-markdown-toc -a public -s Usage --sort-order alpha",
     "prepack": "npm run -s build"
   },
@@ -74,7 +74,7 @@
     "file-loader": "6.2.0",
     "html-webpack-plugin": "5.6.7",
     "mini-css-extract-plugin": "2.10.2",
-    "unbuild": "3.6.1",
+    "tsdown": "0.22.7",
     "webpack": "5.108.4"
   }
 }
